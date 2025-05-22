@@ -43,6 +43,15 @@ sui.log.*
 build/
 .build/
 
+# Embedded git repositories
+contracts/sui-framework-repo/
+contracts/sui-framework/
+
+# Temporary deployment files
+temp-deploy/
+deploy-temp/
+
 # Logs
 logs
 *.log
+.vercel

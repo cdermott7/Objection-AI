@@ -1,0 +1,8 @@
+This is a placeholder for the courtroom background image. To create a proper courtroom background:
+
+1. Find an image of the Ace Attorney courtroom from the games
+2. Save it as "courtroom-bg.png" in this directory
+3. The image should be at least 1200x800 pixels for good quality
+4. For best results, use an image from the games showing the full courtroom view
+
+If you don't have a proper image, the application will display a gradient background instead.

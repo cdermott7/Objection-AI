@@ -9,6 +9,7 @@ A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a 
 - **NFT Badge**: Mint a collectible NFT badge for your guesses
 - **Blockchain Integration**: Built on Sui blockchain with Move contracts
 - **Mobile-friendly**: Responsive design works on all devices
+- **Ace Attorney Mode**: Phoenix Wright-themed gameplay mode with courtroom style chat
 
 ## Tech Stack
 
@@ -92,9 +93,33 @@ A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a 
 
 [MIT](LICENSE)
 
+## Game Modes
+
+### Standard Mode
+The default chat experience with a clean, modern interface. Users have 60 seconds to chat and determine if they're talking to an AI or human.
+
+### Ace Attorney Mode
+A special mode inspired by the "Phoenix Wright: Ace Attorney" video game series. Features:
+
+- **Courtroom Theme**: Phoenix Wright vs. Prosecutor debate-style interface
+- **Character Sprites**: Phoenix and Prosecutor characters present arguments
+- **Sound Effects**: Objections, dramatic courtroom sounds, and text blips
+- **10-Message Limit**: A more challenging format with limited messages
+- **Special Animations**: "OBJECTION!" and "HOLD IT!" dramatic text bubbles
+
+To toggle between modes, use the Ace Attorney Mode toggle in the header (when signed in).
+
+#### Adding Ace Attorney Assets
+To fully experience this mode, you'll need to add sound effects and character sprites:
+
+1. See the README in `/apps/frontend/public/ace-attorney/` for setup instructions
+2. Add sound files to `/apps/frontend/public/ace-attorney/sounds/`
+3. Add character sprites to `/apps/frontend/public/ace-attorney/`
+
 ## Acknowledgments
 
 - [Sui Foundation](https://sui.io)
 - [Mysten Labs](https://mystenlabs.com)
 - [Supabase](https://supabase.com)
 - [Next.js](https://nextjs.org)
+- [Capcom](https://www.capcom.com/) - Inspiration for Ace Attorney Mode

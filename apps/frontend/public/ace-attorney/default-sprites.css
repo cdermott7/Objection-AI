@@ -1,0 +1,221 @@
+/* Default sprite animations for Ace Attorney characters */
+
+/* Phoenix Wright animations */
+@keyframes phoenix-normal {
+  0%, 100% { background-position: 0 0; }
+  33% { background-position: -256px 0; }
+  66% { background-position: -512px 0; }
+}
+
+@keyframes phoenix-talking {
+  0%, 100% { background-position: 0 -256px; }
+  33% { background-position: -256px -256px; }
+  66% { background-position: -512px -256px; }
+}
+
+@keyframes phoenix-objection {
+  0%, 100% { background-position: 0 -512px; }
+  33% { background-position: -256px -512px; }
+  66% { background-position: -512px -512px; }
+}
+
+@keyframes phoenix-thinking {
+  0%, 100% { background-position: 0 -768px; }
+  33% { background-position: -256px -768px; }
+  66% { background-position: -512px -768px; }
+}
+
+@keyframes phoenix-confident {
+  0%, 100% { background-position: 0 -1024px; }
+  33% { background-position: -256px -1024px; }
+  66% { background-position: -512px -1024px; }
+}
+
+/* Edgeworth animations */
+@keyframes edgeworth-normal {
+  0%, 100% { background-position: 0 0; }
+  33% { background-position: -256px 0; }
+  66% { background-position: -512px 0; }
+}
+
+@keyframes edgeworth-talking {
+  0%, 100% { background-position: 0 -256px; }
+  33% { background-position: -256px -256px; }
+  66% { background-position: -512px -256px; }
+}
+
+@keyframes edgeworth-objection {
+  0%, 100% { background-position: 0 -512px; }
+  33% { background-position: -256px -512px; }
+  66% { background-position: -512px -512px; }
+}
+
+@keyframes edgeworth-thinking {
+  0%, 100% { background-position: 0 -768px; }
+  33% { background-position: -256px -768px; }
+  66% { background-position: -512px -768px; }
+}
+
+@keyframes edgeworth-confident {
+  0%, 100% { background-position: 0 -1024px; }
+  33% { background-position: -256px -1024px; }
+  66% { background-position: -512px -1024px; }
+}
+
+/* Judge animations */
+@keyframes judge-normal {
+  0%, 100% { background-position: 0 0; }
+  33% { background-position: -256px 0; }
+  66% { background-position: -512px 0; }
+}
+
+@keyframes judge-talking {
+  0%, 100% { background-position: 0 -256px; }
+  33% { background-position: -256px -256px; }
+  66% { background-position: -512px -256px; }
+}
+
+/* Character sprite classes */
+.aa-sprite {
+  width: 256px;
+  height: 256px;
+  background-repeat: no-repeat;
+  background-size: 768px auto;
+  animation-duration: 0.8s;
+  animation-timing-function: steps(1);
+  animation-iteration-count: infinite;
+}
+
+.aa-phoenix {
+  background-image: url('/ace-attorney/sprites/phoenix-sprite.png');
+}
+
+.aa-phoenix.normal {
+  animation-name: phoenix-normal;
+}
+
+.aa-phoenix.talking {
+  animation-name: phoenix-talking;
+}
+
+.aa-phoenix.objection {
+  animation-name: phoenix-objection;
+}
+
+.aa-phoenix.thinking {
+  animation-name: phoenix-thinking;
+}
+
+.aa-phoenix.confident {
+  animation-name: phoenix-confident;
+}
+
+.aa-edgeworth {
+  background-image: url('/ace-attorney/sprites/edgeworth-sprite.png');
+}
+
+.aa-edgeworth.normal {
+  animation-name: edgeworth-normal;
+}
+
+.aa-edgeworth.talking {
+  animation-name: edgeworth-talking;
+}
+
+.aa-edgeworth.objection {
+  animation-name: edgeworth-objection;
+}
+
+.aa-edgeworth.thinking {
+  animation-name: edgeworth-thinking;
+}
+
+.aa-edgeworth.confident {
+  animation-name: edgeworth-confident;
+}
+
+.aa-judge {
+  background-image: url('/ace-attorney/sprites/judge-sprite.png');
+}
+
+.aa-judge.normal {
+  animation-name: judge-normal;
+}
+
+.aa-judge.talking {
+  animation-name: judge-talking;
+}
+
+/* Default background colors if images fail to load */
+.aa-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.aa-courtroom-bg {
+  background: linear-gradient(to bottom, #1a365d 0%, #2a4365 100%);
+}
+
+.aa-defense-bench {
+  background: linear-gradient(to bottom, #2b6cb0 0%, #3182ce 100%);
+}
+
+.aa-prosecution-bench {
+  background: linear-gradient(to bottom, #c53030 0%, #e53e3e 100%);
+}
+
+.aa-judge-bench {
+  background: linear-gradient(to bottom, #744210 0%, #975a16 100%);
+}
+
+/* Objection animations */
+.aa-objection {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  padding: 20px 40px;
+  z-index: 100;
+  animation: objection-pulse 0.5s infinite alternate;
+}
+
+@keyframes objection-pulse {
+  from { transform: translateX(-50%) scale(1); }
+  to { transform: translateX(-50%) scale(1.05); }
+}
+
+.aa-objection.objection {
+  background-color: #e53e3e;
+  border: 5px solid white;
+}
+
+.aa-objection.holdit {
+  background-color: #3182ce;
+  border: 5px solid white;
+}
+
+.aa-objection.takethat {
+  background-color: #2f855a;
+  border: 5px solid white;
+}
+
+/* Text typing animation */
+@keyframes text-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.aa-text-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 20px;
+  background-color: white;
+  margin-left: 4px;
+  animation: text-blink 0.7s infinite;
+  vertical-align: middle;
+}

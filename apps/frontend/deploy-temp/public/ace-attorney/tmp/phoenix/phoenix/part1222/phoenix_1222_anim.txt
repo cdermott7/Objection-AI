@@ -1,0 +1,503 @@
+29 animations
+
+* Animation 0
+9 keyframes
+Frame	Duration
+0	25
+1	1
+2	1
+1	1
+0	25
+1	1
+2	1
+1	1
+0	25
+
+* Animation 1
+22 keyframes
+Frame	Duration
+3	2
+6	2
+7	2
+6	2
+3	2
+6	2
+7	2
+6	2
+4	1
+5	1
+4	1
+6	2
+7	2
+6	2
+3	2
+6	2
+7	2
+6	2
+3	2
+6	2
+7	2
+6	2
+
+* Animation 2
+27 keyframes
+Frame	Duration
+13	4
+14	4
+13	4
+14	8
+16	2
+12	2
+16	2
+14	5
+13	4
+14	4
+15	4
+13	4
+14	4
+15	4
+13	4
+14	4
+15	4
+13	4
+14	4
+15	4
+16	2
+12	2
+11	2
+8	25
+11	2
+12	2
+16	2
+
+* Animation 3
+22 keyframes
+Frame	Duration
+17	2
+20	2
+21	2
+20	2
+17	2
+20	2
+21	2
+20	2
+18	1
+19	1
+18	1
+20	2
+21	2
+20	2
+17	2
+20	2
+21	2
+20	2
+17	2
+20	2
+21	2
+20	2
+
+* Animation 4
+5 keyframes
+Frame	Duration
+22	4
+23	3
+24	4
+23	3
+22	3
+
+* Animation 5
+9 keyframes
+Frame	Duration
+25	1
+26	2
+28	2
+27	2
+29	3
+27	2
+28	4
+26	2
+25	3
+
+* Animation 6
+1 keyframes
+Frame	Duration
+30	1
+
+* Animation 7
+6 keyframes
+Frame	Duration
+31	2
+32	1
+33	1
+32	5
+34	1
+35	5
+
+* Animation 8
+9 keyframes
+Frame	Duration
+36	25
+37	2
+38	2
+37	2
+36	25
+37	1
+38	1
+37	1
+36	30
+
+* Animation 9
+22 keyframes
+Frame	Duration
+39	2
+42	2
+43	2
+42	2
+39	2
+42	2
+43	2
+42	2
+40	1
+41	1
+40	1
+42	2
+43	2
+42	2
+39	2
+42	2
+43	2
+42	2
+39	2
+42	2
+43	2
+42	2
+
+* Animation 10
+7 keyframes
+Frame	Duration
+44	4
+45	3
+46	1
+47	1
+48	5
+47	1
+45	8
+
+* Animation 11
+9 keyframes
+Frame	Duration
+49	25
+50	1
+51	1
+50	1
+49	25
+50	1
+51	1
+50	1
+49	30
+
+* Animation 12
+18 keyframes
+Frame	Duration
+52	2
+53	2
+54	2
+53	2
+55	1
+56	1
+57	1
+53	1
+54	2
+53	2
+52	2
+53	2
+54	2
+53	2
+52	2
+53	2
+54	2
+53	2
+
+* Animation 13
+6 keyframes
+Frame	Duration
+58	4
+59	4
+60	6
+61	5
+62	5
+63	5
+
+* Animation 14
+24 keyframes
+Frame	Duration
+64	2
+67	2
+68	2
+69	2
+65	2
+70	2
+71	2
+69	2
+64	3
+67	13
+72	2
+73	2
+72	2
+67	15
+68	2
+69	2
+64	2
+67	2
+68	2
+69	2
+64	2
+67	2
+68	2
+69	2
+
+* Animation 15
+22 keyframes
+Frame	Duration
+74	2
+77	2
+78	2
+79	2
+75	1
+76	1
+75	1
+77	2
+78	2
+79	2
+74	2
+77	2
+78	2
+79	2
+74	2
+77	2
+78	2
+79	2
+74	2
+77	2
+78	2
+79	2
+
+* Animation 16
+20 keyframes
+Frame	Duration
+80	2
+81	2
+82	2
+83	2
+80	2
+81	2
+82	2
+83	2
+80	2
+81	2
+82	2
+83	2
+80	2
+81	2
+82	2
+83	2
+80	2
+81	2
+82	2
+83	2
+
+* Animation 17
+20 keyframes
+Frame	Duration
+87	2
+88	2
+89	2
+90	2
+87	2
+88	2
+89	2
+90	2
+87	2
+88	2
+89	2
+90	2
+87	2
+88	2
+89	2
+90	2
+87	2
+88	2
+89	2
+90	2
+
+* Animation 18
+4 keyframes
+Frame	Duration
+94	2
+95	2
+96	2
+97	2
+
+* Animation 19
+30 keyframes
+Frame	Duration
+102	2
+99	2
+100	2
+101	2
+98	2
+99	2
+100	2
+101	2
+98	2
+99	2
+100	2
+104	2
+101	1
+98	2
+99	1
+103	2
+100	2
+101	2
+98	2
+99	2
+100	2
+101	2
+98	2
+99	2
+100	2
+101	2
+98	2
+99	2
+100	2
+101	2
+
+* Animation 20
+9 keyframes
+Frame	Duration
+105	4
+109	1
+110	1
+111	1
+108	5
+105	1
+106	4
+108	3
+107	8
+
+* Animation 21
+1 keyframes
+Frame	Duration
+112	16
+
+* Animation 22
+4 keyframes
+Frame	Duration
+115	3
+116	3
+117	3
+116	3
+
+* Animation 23
+5 keyframes
+Frame	Duration
+118	8
+119	3
+120	3
+119	3
+118	5
+
+* Animation 24
+1 keyframes
+Frame	Duration
+121	1
+
+* Animation 25
+9 keyframes
+Frame	Duration
+122	13
+123	2
+124	2
+123	2
+122	50
+123	2
+124	2
+123	2
+122	43
+
+* Animation 26
+22 keyframes
+Frame	Duration
+125	3
+128	3
+129	3
+128	3
+125	3
+128	3
+129	3
+128	3
+126	1
+127	1
+130	1
+128	1
+129	3
+128	3
+125	3
+128	3
+129	3
+128	3
+125	3
+128	3
+129	3
+128	3
+
+* Animation 27
+9 keyframes
+Frame	Duration
+131	13
+132	2
+133	2
+132	2
+131	50
+132	2
+133	2
+132	2
+131	43
+
+* Animation 28
+21 keyframes
+Frame	Duration
+134	2
+135	3
+136	3
+135	3
+134	3
+135	3
+136	2
+137	1
+138	1
+139	1
+138	1
+135	1
+134	3
+135	3
+136	3
+135	3
+134	3
+135	3
+136	3
+135	3
+134	2
+
+Unused frames
+9
+10
+66
+84
+85
+86
+91
+92
+93
+113
+114
