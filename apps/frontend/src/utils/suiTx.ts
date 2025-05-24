@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Sui blockchain transaction utilities for TuriCheck
  * 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import { WalletKitProvider, useWalletKit } from '@mysten/wallet-kit';

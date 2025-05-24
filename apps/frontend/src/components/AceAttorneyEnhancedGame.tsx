@@ -287,7 +287,7 @@ export default function AceAttorneyEnhancedGame() {
     // If this is the last scene in intro sequence, prepare to start the game
     if (gameState === GameState.INTRO && currentSceneIndex === scenes.length - 1) {
       sceneTimeout.current = setTimeout(() => {
-        startChat();
+        startChat(0);
         setIsGameStarted(true);
         setCurrentQuestionIndex(0);
         setGameState(GameState.JUDGE_QUESTION);

@@ -59,12 +59,12 @@ export default function ChatBox() {
       // Force app layout to be full screen
       const appElement = document.querySelector('#__next') || document.querySelector('#app');
       if (appElement) {
-        appElement.style.height = '100vh';
-        appElement.style.width = '100vw';
-        appElement.style.maxWidth = 'none';
-        appElement.style.padding = '0';
-        appElement.style.margin = '0';
-        appElement.style.overflow = 'hidden';
+        (appElement as HTMLElement).style.height = '100vh';
+        (appElement as HTMLElement).style.width = '100vw';
+        (appElement as HTMLElement).style.maxWidth = 'none';
+        (appElement as HTMLElement).style.padding = '0';
+        (appElement as HTMLElement).style.margin = '0';
+        (appElement as HTMLElement).style.overflow = 'hidden';
       }
       
     } else {
@@ -93,12 +93,12 @@ export default function ChatBox() {
       // Restore app layout
       const appElement = document.querySelector('#__next') || document.querySelector('#app');
       if (appElement) {
-        appElement.style.removeProperty('height');
-        appElement.style.removeProperty('width');
-        appElement.style.removeProperty('max-width');
-        appElement.style.removeProperty('padding');
-        appElement.style.removeProperty('margin');
-        appElement.style.removeProperty('overflow');
+        (appElement as HTMLElement).style.removeProperty('height');
+        (appElement as HTMLElement).style.removeProperty('width');
+        (appElement as HTMLElement).style.removeProperty('max-width');
+        (appElement as HTMLElement).style.removeProperty('padding');
+        (appElement as HTMLElement).style.removeProperty('margin');
+        (appElement as HTMLElement).style.removeProperty('overflow');
       }
     }
     
@@ -126,12 +126,12 @@ export default function ChatBox() {
       // Restore app layout
       const appElement = document.querySelector('#__next') || document.querySelector('#app');
       if (appElement) {
-        appElement.style.removeProperty('height');
-        appElement.style.removeProperty('width');
-        appElement.style.removeProperty('max-width');
-        appElement.style.removeProperty('padding');
-        appElement.style.removeProperty('margin');
-        appElement.style.removeProperty('overflow');
+        (appElement as HTMLElement).style.removeProperty('height');
+        (appElement as HTMLElement).style.removeProperty('width');
+        (appElement as HTMLElement).style.removeProperty('max-width');
+        (appElement as HTMLElement).style.removeProperty('padding');
+        (appElement as HTMLElement).style.removeProperty('margin');
+        (appElement as HTMLElement).style.removeProperty('overflow');
       }
     };
   }, [isAceAttorneyMode]);
@@ -150,7 +150,7 @@ export default function ChatBox() {
   const handleStartChat = async () => {
     setStartingChat(true);
     try {
-      await startChat();
+      await startChat(0);
     } catch (error) {
       console.error('Error starting chat:', error);
     } finally {

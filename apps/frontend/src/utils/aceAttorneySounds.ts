@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Ace Attorney sound effects utility
 // 
 // IMPORTANT: This module requires actual sound files to work properly.

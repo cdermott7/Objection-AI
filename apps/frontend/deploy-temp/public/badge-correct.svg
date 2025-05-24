@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-  <circle cx="150" cy="150" r="140" fill="#4F46E5" />
-  <circle cx="150" cy="150" r="120" fill="#6366F1" />
-  <text x="150" y="150" font-family="Arial" font-size="40" text-anchor="middle" fill="white" dy="15">TuriCheck</text>
-  <text x="150" y="190" font-family="Arial" font-size="24" text-anchor="middle" fill="white">Correct!</text>
-  <path d="M120,150 L140,170 L180,130" stroke="white" stroke-width="10" fill="none" />
-</svg>

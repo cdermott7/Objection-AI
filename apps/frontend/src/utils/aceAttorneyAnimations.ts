@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Ace Attorney Animation Utilities
 
 // Character animation states

@@ -1,0 +1,14 @@
+node_modules/
+contracts/
+sdk/
+scripts/
+temp-deploy/
+apps/frontend/deploy-temp/
+apps/frontend/public/ace-attorney/tmp/
+apps/frontend/public/ace-attorney/organized/
+.git/
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

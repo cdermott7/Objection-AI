@@ -152,7 +152,7 @@ export default function AceAttorneyGame() {
     switch (gameState) {
       case GameState.INTRO:
         // Start the actual chat
-        startChat();
+        startChat(0);
         setIsGameStarted(true);
         setGameState(GameState.PLAYER_TURN);
         break;
