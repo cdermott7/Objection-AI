@@ -2,27 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ConnectButton } from '@mysten/wallet-kit';
+import { ConnectButton, useCurrentAccount } from '@mysten/dapp-kit';
 import { useMockWallet } from '../../src/context/MockWalletContext';
 
 export default function Login() {
   const router = useRouter();
+  const currentAccount = useCurrentAccount();
   const { isConnected, address, connect: connectMock } = useMockWallet();
   const [loading, setLoading] = useState(false);
 
   // Debug logging
   useEffect(() => {
     console.log("Login page mounted");
-    console.log("Mock wallet state:", { isConnected, address });
-  }, [isConnected, address]);
+    console.log("Wallet state:", { 
+      currentAccount: !!currentAccount, 
+      mockConnected: isConnected, 
+      mockAddress: address 
+    });
+  }, [currentAccount, isConnected, address]);
 
-  // Check if user is already logged in with mock wallet
+  // Check if user is already logged in with any wallet
   useEffect(() => {
-    if (isConnected && address) {
-      console.log("User is logged in with mock wallet, redirecting to home");
+    if ((currentAccount && currentAccount.address) || (isConnected && address)) {
+      console.log("User is logged in, redirecting to home");
       router.push('/');
     }
-  }, [isConnected, address, router]);
+  }, [currentAccount, isConnected, address, router]);
 
   const handleMockConnect = () => {
     setLoading(true);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useWalletKit } from '@mysten/wallet-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { SuiClient } from '@mysten/sui/client';
 import { useMockWallet } from '../context/MockWalletContext';
 import { getWalletBalance, buildStakeTx, signAndExecuteTransaction } from '../utils/suiTx';
@@ -17,34 +17,35 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   // Get wallet state from both real and mock wallets
-  const walletKit = useWalletKit();
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const mockWallet = useMockWallet();
   
   // Store these in refs to access in event handlers
-  const walletKitRef = useRef(walletKit);
+  const currentAccountRef = useRef(currentAccount);
   const mockWalletRef = useRef(mockWallet);
   
   // Update refs when values change
   useEffect(() => {
-    walletKitRef.current = walletKit;
+    currentAccountRef.current = currentAccount;
     mockWalletRef.current = mockWallet;
-  }, [walletKit, mockWallet]);
+  }, [currentAccount, mockWallet]);
   
   // Combined wallet state - ensure mockWallet is checked first to prioritize it if both are available
-  const isConnected = mockWallet.isConnected || walletKit.isConnected;
-  const walletAddress = mockWallet.isConnected ? mockWallet.address : walletKit.currentAccount?.address;
+  const isConnected = mockWallet.isConnected || !!currentAccount;
+  const walletAddress = mockWallet.isConnected ? mockWallet.address : currentAccount?.address;
   
   // Log wallet state for debugging
   useEffect(() => {
     console.log('StakeForm wallet state:', { 
       mockConnected: mockWallet.isConnected, 
-      walletKitConnected: walletKit.isConnected,
+      currentAccountConnected: !!currentAccount,
       mockAddress: mockWallet.address,
-      walletKitAddress: walletKit.currentAccount?.address,
+      currentAccountAddress: currentAccount?.address,
       isConnected,
       walletAddress
     });
-  }, [mockWallet.isConnected, mockWallet.address, walletKit.isConnected, walletKit.currentAccount, isConnected, walletAddress]);
+  }, [mockWallet.isConnected, mockWallet.address, currentAccount, isConnected, walletAddress]);
   
   // Fetch balance from appropriate wallet
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
         if (mockWallet.isConnected) {
           // Use the mock wallet balance
           setBalance(mockWallet.balance);
-        } else if (walletKit.isConnected && walletKit.currentAccount) {
+        } else if (currentAccount) {
           try {
             // Initialize SUI client
             const network = process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet';
@@ -64,11 +65,11 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
             });
             
             // Fetch real balance from the blockchain
-            const totalBalance = await getWalletBalance(suiClient, walletKit.currentAccount.address);
+            const totalBalance = await getWalletBalance(suiClient, currentAccount.address);
             setBalance(totalBalance);
             
             console.log('Fetched real wallet balance:', {
-              address: walletKit.currentAccount.address,
+              address: currentAccount.address,
               balance: totalBalance
             });
           } catch (error) {
@@ -81,7 +82,7 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
     };
     
     fetchBalance();
-  }, [isConnected, walletKit.isConnected, walletKit.currentAccount, mockWallet.isConnected, mockWallet.balance]);
+  }, [isConnected, currentAccount, mockWallet.isConnected, mockWallet.balance]);
   
   const handleStakeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -100,10 +101,10 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
     if (!isConnected) {
       console.log('Not connected when trying to submit stake - checking individual wallets');
       const { current: mockWallet } = mockWalletRef;
-      const { current: walletKit } = walletKitRef;
+      const { current: currentAccount } = currentAccountRef;
       
       // If neither wallet is connected, display error
-      if (!mockWallet.isConnected && !walletKit.isConnected) {
+      if (!mockWallet.isConnected && !currentAccount) {
         console.error('No wallet connected when trying to stake');
         setErrorMessage('No wallet connected. Please connect a wallet first.');
         return;
@@ -116,12 +117,12 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
     try {
       // Access the current values from refs to avoid hook issues
       const { current: mockWallet } = mockWalletRef;
-      const { current: walletKit } = walletKitRef;
+      const { current: currentAccount } = currentAccountRef;
       
       console.log('Submitting stake, wallet state:', {
         mockConnected: mockWallet.isConnected,
-        walletKitConnected: walletKit.isConnected,
-        hasCurrentAccount: !!walletKit.currentAccount,
+        currentAccountConnected: !!currentAccount,
+        hasCurrentAccount: !!currentAccount,
         stakeAmount
       });
       
@@ -131,20 +132,27 @@ export default function StakeForm({ onStakeSubmit }: StakeFormProps) {
         mockWallet.updateBalance(-stakeAmount);
         console.log(`Mock stake of ${stakeAmount} SUI submitted`);
         onStakeSubmit(stakeAmount);
-      } else if (walletKit.isConnected && walletKit.currentAccount) {
+      } else if (currentAccount) {
         // For real wallet: build and submit transaction
         console.log(`Building stake transaction for ${stakeAmount} SUI`);
         
         // Build the stake transaction
         const tx = buildStakeTx(stakeAmount);
         
-        // Use the signAndExecuteTransactionBlock from the ref
-        const result = await signAndExecuteTransaction(walletKit.signAndExecuteTransactionBlock, tx);
+        // Use the signAndExecute hook
+        const result = await new Promise((resolve, reject) => {
+          signAndExecute({
+            transaction: tx
+          }, {
+            onSuccess: resolve,
+            onError: reject
+          });
+        });
         
         console.log('Stake transaction result:', result);
         
         // Only proceed to game if transaction succeeded
-        if (result && result.effects && result.effects.status && result.effects.status.status === 'success') {
+        if (result) {
           onStakeSubmit(stakeAmount);
         } else {
           throw new Error('Transaction failed');

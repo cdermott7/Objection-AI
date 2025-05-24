@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useChat, ChatPartnerType } from '../context/ChatContext';
-import { useWalletKit } from '@mysten/wallet-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { useMockWallet } from '../context/MockWalletContext';
 // Import the transaction utilities
 import { buildSubmitGuessTx, signAndExecuteTransaction } from '../utils/suiTx';
@@ -16,21 +16,22 @@ export default function GuessForm() {
   const [rewardClaimed, setRewardClaimed] = useState(false);
   
   // Get wallet state from both real and mock wallets
-  const walletKit = useWalletKit();
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const mockWallet = useMockWallet();
   
   // Store wallet states in refs to avoid hook issues in event handlers
-  const walletKitRef = useRef(walletKit);
+  const currentAccountRef = useRef(currentAccount);
   const mockWalletRef = useRef(mockWallet);
   
   // Update refs when values change
   useEffect(() => {
-    walletKitRef.current = walletKit;
+    currentAccountRef.current = currentAccount;
     mockWalletRef.current = mockWallet;
-  }, [walletKit, mockWallet]);
+  }, [currentAccount, mockWallet]);
   
   // Use the appropriate wallet address
-  const walletAddress = walletKit.currentAccount?.address || mockWallet.address || 'mock-address';
+  const walletAddress = currentAccount?.address || mockWallet.address || 'mock-address';
   
   // Track transaction in progress
   const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
@@ -69,7 +70,7 @@ export default function GuessForm() {
     try {
       // Access the current values from refs to avoid hook issues
       const { current: mockWallet } = mockWalletRef;
-      const { current: walletKit } = walletKitRef;
+      const { current: currentAccount } = currentAccountRef;
       
       console.log('Building submit guess transaction');
       
@@ -80,7 +81,7 @@ export default function GuessForm() {
       const gameId = gameObjectId || `0x${Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
       
       // Only use mock wallet if real wallet is not connected
-      const isRealWalletConnected = walletKit.isConnected;
+      const isRealWalletConnected = !!currentAccount;
       
       // Fall back to mock wallet only if real wallet is not available
       if (!isRealWalletConnected && stakeAmount) {
@@ -110,29 +111,28 @@ export default function GuessForm() {
       setTransactionStatus('Creating transaction...');
       
       // Determine if we can use the real wallet
-      const isWalletConnected = walletKit.isConnected;
+      const isWalletConnected = !!currentAccount;
       const shouldUseMock = !isWalletConnected;
       
       // Debug wallet state
       console.log('WALLET CONNECTION STATUS:', {
-        walletKit: {
-          isConnected: walletKit.isConnected,
-          address: walletKit.currentAccount?.address
+        currentAccount: {
+          isConnected: !!currentAccount,
+          address: currentAccount?.address
         },
         mockWallet: {
           isConnected: mockWallet.isConnected,
           address: mockWallet.address
         },
         decision: {
-          isExtendedWalletConnected,
-          isWalletAdapterConnected,
+          isWalletConnected,
           shouldUseMock
         }
       });
       
       // Get the winner address
       const winnerAddress = guessCorrect ? (
-        walletKit.currentAccount?.address || 
+        currentAccount?.address || 
         mockWallet.address || 
         '0x0000000000000000000000000000000000000000'
       ) : '0x0000000000000000000000000000000000000000';
@@ -170,11 +170,15 @@ export default function GuessForm() {
         
         // Different execution paths based on wallet availability
         if (isWalletConnected) {
-          // Use wallet kit
-          console.log('Executing transaction with wallet kit');
-          const result = await walletKit.signAndExecuteTransactionBlock({
-            transactionBlock: tx,
-            options: { showEffects: true, showEvents: true }
+          // Use dapp-kit
+          console.log('Executing transaction with dapp-kit');
+          const result = await new Promise((resolve, reject) => {
+            signAndExecute({
+              transaction: tx
+            }, {
+              onSuccess: resolve,
+              onError: reject
+            });
           });
           console.log('Transaction successful:', result);
         }
@@ -223,7 +227,7 @@ export default function GuessForm() {
   // Auto-claim rewards only for mock wallet when no real wallet is connected
   useEffect(() => {
     // Check if any real wallet is connected
-    const isAnyRealWalletConnected = walletKit.isConnected;
+    const isAnyRealWalletConnected = !!currentAccount;
     
     // Only auto-claim for mock wallet when no real wallet is connected
     if (!isAnyRealWalletConnected && guessCorrect && stakeAmount && !rewardClaimed && !isSubmitting) {
@@ -255,7 +259,7 @@ export default function GuessForm() {
     stakeAmount, 
     rewardClaimed, 
     isSubmitting, 
-    walletKit.isConnected
+    currentAccount
   ]);
 
   // If chat hasn't ended, don't show the form
@@ -323,12 +327,12 @@ export default function GuessForm() {
           <div className="flex flex-col items-center">
             {/* Status banner for wallet info */}
             <div className="mb-4 w-full px-4 py-2 bg-blue-50 border border-blue-100 rounded-lg text-blue-700 text-sm text-center">
-              {walletKit.isConnected ? (
+              {currentAccount ? (
                 <div className="flex items-center justify-center">
                   <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Wallet connected: {walletKit.currentAccount?.address?.slice(0, 8)}...{walletKit.currentAccount?.address?.slice(-6)}</span>
+                  <span>Wallet connected: {currentAccount?.address?.slice(0, 8)}...{currentAccount?.address?.slice(-6)}</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
@@ -375,7 +379,7 @@ export default function GuessForm() {
             </button>
             
             {/* Connect wallet button if not connected */}
-            {!walletKit.isConnected && !rewardClaimed && (
+            {!currentAccount && !rewardClaimed && (
               <button 
                 onClick={() => console.log('Connect wallet clicked')}
                 className="mt-4 text-indigo-600 hover:text-indigo-800 text-sm flex items-center"

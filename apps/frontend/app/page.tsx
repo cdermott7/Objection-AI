@@ -10,7 +10,7 @@ import GuessForm from '../src/components/GuessForm';
 import StakeForm from '../src/components/StakeForm';
 import SimpleAceAttorneyToggle from '../src/components/SimpleAceAttorneyToggle';
 import { useMockWallet } from '../src/context/MockWalletContext';
-import { useWalletKit } from '@mysten/wallet-kit';
+import { useCurrentAccount, useDisconnectWallet } from '@mysten/dapp-kit';
 
 export default function Home() {
   const { signOut } = useContext(AuthContext);
@@ -19,11 +19,13 @@ export default function Home() {
   const [showStakeForm, setShowStakeForm] = useState(false);
   
   // Check both real and mock wallet
-  const { currentAccount, isConnected: isWalletKitConnected, disconnect: disconnectWalletKit } = useWalletKit();
+  const currentAccount = useCurrentAccount();
+  const { mutate: disconnectWallet } = useDisconnectWallet();
   const { isConnected: isMockConnected, address: mockAddress, disconnect: disconnectMock } = useMockWallet();
   
   // Combined wallet state
-  const isConnected = isWalletKitConnected || isMockConnected;
+  const isWalletConnected = !!currentAccount;
+  const isConnected = isWalletConnected || isMockConnected;
   const walletAddress = currentAccount?.address || mockAddress;
   
   // Redirect to login if not connected
@@ -35,8 +37,8 @@ export default function Home() {
   
   const handleLogout = async () => {
     // Disconnect appropriate wallet
-    if (isWalletKitConnected) {
-      await disconnectWalletKit();
+    if (isWalletConnected) {
+      disconnectWallet();
     } else if (isMockConnected) {
       disconnectMock();
     }
