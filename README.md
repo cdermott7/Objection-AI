@@ -1,6 +1,10 @@
 # Objection! AI
 
-A blockchain-powered courtroom where you present your case to determine if you're facing a human or AI opponent. Engage in dramatic courtroom dialogue, analyze responses, and prove your case beyond reasonable doubt!
+🏛️ **A blockchain-powered courtroom where you present your case to determine if you're facing a human or AI opponent!**
+
+Step into Phoenix Wright's shoes and engage in dramatic courtroom dialogue, analyze responses, and prove your case beyond reasonable doubt! With multiple case types, cross-examinations, evidence presentation, and dynamic questioning - every trial is a unique experience.
+
+⚖️ **Live Demo:** [Try Objection! AI](https://objection-ai.vercel.app) *(Coming Soon)*
 
 ## Features
 
