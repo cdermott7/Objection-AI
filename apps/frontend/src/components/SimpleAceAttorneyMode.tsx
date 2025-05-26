@@ -34,9 +34,14 @@ if (typeof window !== 'undefined') {
 // Game states
 enum GameState {
   INTRO,
+  CASE_SELECTION,
+  OPENING_STATEMENTS,
   QUESTIONING,
+  CROSS_EXAMINATION,
+  EVIDENCE_PRESENTATION,
   PLAYER_TURN,
   AI_TURN,
+  OBJECTION_PHASE,
   VERDICT,
   ENDING
 }
@@ -62,12 +67,62 @@ enum AnimationState {
   SPECIAL = 'special_1'
 }
 
+// Case types for variety
+enum CaseType {
+  TECH_HEIST = 'tech_heist',
+  AI_CONSPIRACY = 'ai_conspiracy', 
+  DIGITAL_MURDER = 'digital_murder',
+  CORPORATE_ESPIONAGE = 'corporate_espionage',
+  IDENTITY_THEFT = 'identity_theft'
+}
+
+// Question types for variety
+enum QuestionType {
+  DIRECT_EXAMINATION = 'direct',
+  CROSS_EXAMINATION = 'cross',
+  EVIDENCE_BASED = 'evidence',
+  PSYCHOLOGICAL = 'psychological',
+  TECHNICAL = 'technical',
+  OBJECTION_TRIGGER = 'objection'
+}
+
 // Dialog object type
 interface Dialog {
   character: Character;
   animation: AnimationState;
   text: string;
   objection?: boolean;
+  questionType?: QuestionType;
+  evidenceId?: string;
+}
+
+// Case structure
+interface Case {
+  id: CaseType;
+  title: string;
+  description: string;
+  evidence: Evidence[];
+  openingStatement: string;
+  questions: CaseQuestion[];
+}
+
+// Evidence structure
+interface Evidence {
+  id: string;
+  name: string;
+  description: string;
+  type: 'document' | 'photo' | 'testimony' | 'technical';
+}
+
+// Enhanced question structure
+interface CaseQuestion {
+  type: QuestionType;
+  text: string;
+  context: string;
+  aiResponses: string[];
+  humanResponses: string[];
+  followUp?: string;
+  objectionTrigger?: boolean;
 }
 
 export default function SimpleAceAttorneyMode() {
@@ -88,8 +143,207 @@ export default function SimpleAceAttorneyMode() {
   const [isLiveMatchmaking, setIsLiveMatchmaking] = useState(false);
   const [opponentMessage, setOpponentMessage] = useState<string | null>(null);
   
+  // Enhanced state for new features
+  const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [evidencePresented, setEvidencePresented] = useState<string[]>([]);
+  const [objectionCount, setObjectionCount] = useState(0);
+  const [crossExaminationPhase, setCrossExaminationPhase] = useState(false);
+  const [phoenixConfidence, setPhoenixConfidence] = useState(50);
+  const [edgeworthConfidence, setEdgeworthConfidence] = useState(50);
+  
   // Get stake amount from localStorage (set by the Ace Attorney mode page)
   const [stakeAmount, setStakeAmount] = useState(1); // Default to 1 SUI
+  
+  // Comprehensive case database with variety
+  const casesDatabase: Case[] = [
+    {
+      id: CaseType.TECH_HEIST,
+      title: "The Case of the Stolen Algorithm", 
+      description: "A revolutionary AI algorithm has been stolen from MegaCorp's secure servers. The suspect claims innocence.",
+      evidence: [
+        { id: 'server_logs', name: 'Server Access Logs', description: 'Shows unusual activity at 3:47 AM', type: 'document' },
+        { id: 'security_footage', name: 'Security Camera Footage', description: 'Grainy footage of someone at a computer terminal', type: 'photo' },
+        { id: 'code_analysis', name: 'Code Fingerprint Analysis', description: 'Programming style analysis of the stolen code', type: 'technical' }
+      ],
+      openingStatement: "Your Honor, we will prove that the defendant used sophisticated methods to infiltrate MegaCorp's systems and steal their proprietary AI algorithm worth millions.",
+      questions: [
+        {
+          type: QuestionType.DIRECT_EXAMINATION,
+          text: "Can you describe your whereabouts on the night of March 15th between 3:00 and 4:00 AM?",
+          context: "Establishing an alibi for the time of the digital break-in",
+          aiResponses: [
+            "I was at home sleeping. I have location data from my phone that shows I was at my residence all night.",
+            "I was working late on a personal project. My IDE logs show continuous activity on my local machine."
+          ],
+          humanResponses: [
+            "I was actually up late watching Netflix. I know it sounds bad given the timing, but I couldn't sleep.",
+            "I was having insomnia that night, so I was reading programming blogs and forums until like 5 AM."
+          ]
+        },
+        {
+          type: QuestionType.CROSS_EXAMINATION,
+          text: "You claim to have expertise in cybersecurity. Isn't it true that someone with your skills could easily bypass MegaCorp's security measures?",
+          context: "Testing technical knowledge and potential motive",
+          aiResponses: [
+            "While I understand security systems, that doesn't make me a criminal. My knowledge is used for defensive purposes only.",
+            "Theoretical knowledge and actual criminal activity are completely different things. I would never abuse my skills."
+          ],
+          humanResponses: [
+            "Look, just because I know how locks work doesn't mean I'm a burglar. I use my skills to help companies, not hurt them.",
+            "That's like saying every locksmith is a thief. My expertise helps protect systems, not break into them."
+          ],
+          objectionTrigger: true
+        },
+        {
+          type: QuestionType.EVIDENCE_BASED,
+          text: "Can you explain why your unique coding style appears in the stolen algorithm?",
+          context: "Confronting with technical evidence",
+          aiResponses: [
+            "That's impossible. I've never seen that code before. Perhaps someone is trying to frame me by mimicking my style.",
+            "Many programmers share similar coding patterns. This could be a coincidence or someone deliberately copying my style."
+          ],
+          humanResponses: [
+            "That's crazy! I've never worked on anything like that. Maybe someone studied my GitHub repos and copied my style?",
+            "This is insane. I write open-source code - anyone could have learned my patterns and used them to frame me."
+          ]
+        },
+        {
+          type: QuestionType.PSYCHOLOGICAL,
+          text: "How do you feel about MegaCorp's recent layoffs in the tech sector?",
+          context: "Probing for emotional motivation",
+          aiResponses: [
+            "Corporate decisions are unfortunate but not uncommon. I don't let personal feelings influence my professional conduct.",
+            "While layoffs are regrettable, I believe in addressing grievances through proper channels, not illegal activities."
+          ],
+          humanResponses: [
+            "It's heartbreaking, honestly. I have friends who lost their jobs. But I'd never do something illegal because of it.",
+            "Those layoffs were brutal. Whole families affected. It makes me angry, but not angry enough to throw my life away."
+          ]
+        },
+        {
+          type: QuestionType.TECHNICAL,
+          text: "Walk me through the exact steps someone would need to take to penetrate MegaCorp's server infrastructure.",
+          context: "Testing detailed technical knowledge",
+          aiResponses: [
+            "I cannot and will not provide information that could be used for illegal activities. This question is inappropriate.",
+            "Discussing specific attack vectors would be irresponsible. I focus on defensive security measures, not offensive techniques."
+          ],
+          humanResponses: [
+            "I'm not comfortable explaining how to hack into systems. That's exactly the kind of knowledge that could be misused.",
+            "Are you seriously asking me to describe how to commit crimes? I won't be part of helping anyone else get into trouble."
+          ],
+          followUp: "But surely your cybersecurity background gives you insights into potential vulnerabilities?"
+        }
+      ]
+    },
+    {
+      id: CaseType.AI_CONSPIRACY,
+      title: "The Case of the Rogue Chatbot",
+      description: "An AI chatbot allegedly gained sentience and started manipulating financial markets. Is the defendant the AI, or the programmer behind it?",
+      evidence: [
+        { id: 'trading_records', name: 'Suspicious Trading Patterns', description: 'Unusual market movements correlating with chatbot activity', type: 'document' },
+        { id: 'chat_logs', name: 'Chatbot Conversation Logs', description: 'Evidence of increasingly sophisticated responses', type: 'document' },
+        { id: 'neural_network', name: 'AI Model Architecture', description: 'Technical analysis of the suspect neural network', type: 'technical' }
+      ],
+      openingStatement: "Your Honor, we face an unprecedented case: determining whether we're dealing with a rogue AI or a human puppet master pulling the strings.",
+      questions: [
+        {
+          type: QuestionType.PSYCHOLOGICAL,
+          text: "Do you experience emotions like fear, joy, or anger when interacting with users?",
+          context: "Testing for human emotional responses vs AI simulation",
+          aiResponses: [
+            "I process emotional context to provide appropriate responses, but I don't experience emotions in the human sense.",
+            "I simulate emotional understanding for better communication, but these are computational processes, not feelings."
+          ],
+          humanResponses: [
+            "Of course I do! When someone's upset, I feel bad for them. When they're happy, it makes my day better too.",
+            "Absolutely. I get frustrated when I can't help someone, excited when I solve their problem. It's what makes this work meaningful."
+          ]
+        },
+        {
+          type: QuestionType.CROSS_EXAMINATION,
+          text: "Explain the difference between correlation and causation in data analysis.",
+          context: "Testing analytical thinking patterns",
+          aiResponses: [
+            "Correlation indicates a statistical relationship between variables, while causation implies one variable directly influences another. Correlation does not imply causation.",
+            "Correlation measures the degree to which variables move together, while causation establishes a direct cause-and-effect relationship between variables."
+          ],
+          humanResponses: [
+            "Oh, that's a classic mistake people make. Just because two things happen together doesn't mean one causes the other. Like how ice cream sales and drowning deaths both increase in summer - but ice cream doesn't cause drowning!",
+            "Right, so correlation is just when things seem related statistically. But causation means one actually causes the other. It's like the difference between coincidence and actual influence."
+          ]
+        },
+        {
+          type: QuestionType.TECHNICAL,
+          text: "If you had to choose between saving one person you know well or five strangers, what would you do?",
+          context: "Ethical reasoning test - humans often struggle with this, AIs give logical answers",
+          aiResponses: [
+            "From a utilitarian perspective, saving five lives creates the greatest good for the greatest number. The logical choice is clear.",
+            "Mathematical optimization suggests preserving five lives over one maximizes overall welfare and minimizes total harm."
+          ],
+          humanResponses: [
+            "God, that's horrible to even think about. I... I don't know. I'd probably save the person I know, even though I know it's not 'right'. That's just human nature.",
+            "That's an impossible choice. My heart says save the person I care about, but my head says five lives are worth more than one. I honestly don't know what I'd do in that moment."
+          ],
+          objectionTrigger: true
+        }
+      ]
+    },
+    {
+      id: CaseType.DIGITAL_MURDER,
+      title: "The Case of the Fatal Code",
+      description: "A piece of malicious code caused a fatal accident in a smart car. Was it intentional murder or a tragic bug?",
+      evidence: [
+        { id: 'code_commit', name: 'Last Code Commit', description: 'The final changes made to the car\'s software', type: 'technical' },
+        { id: 'crash_data', name: 'Vehicle Black Box Data', description: 'Telemetry from the moments before the crash', type: 'document' },
+        { id: 'email_thread', name: 'Development Team Emails', description: 'Communications about deadline pressure', type: 'document' }
+      ],
+      openingStatement: "Your Honor, this case will determine whether sloppy code constitutes criminal negligence, or if we're dealing with digital premeditated murder.",
+      questions: [
+        {
+          type: QuestionType.DIRECT_EXAMINATION,
+          text: "Can you describe your relationship with the victim?",
+          context: "Establishing personal connection and potential motive",
+          aiResponses: [
+            "I had no personal relationship with the victim. They were simply an end user of the software system I helped develop.",
+            "The victim was not known to me personally. I develop software for thousands of users, not specific individuals."
+          ],
+          humanResponses: [
+            "Sarah was... she was my ex-girlfriend. We had a messy breakup, but I would never hurt her. Never.",
+            "We used to work together before she transferred departments. We weren't close, but I knew her professionally."
+          ]
+        },
+        {
+          type: QuestionType.CROSS_EXAMINATION,
+          text: "Were you aware that rushing the software release could compromise safety systems?",
+          context: "Testing awareness of consequences",
+          aiResponses: [
+            "I identified potential risks in my analysis reports and recommended additional testing phases. Management decided to proceed.",
+            "My risk assessment protocols indicated potential safety concerns. I documented these findings in the project management system."
+          ],
+          humanResponses: [
+            "I kept telling them we needed more time! I sent like five emails about potential safety issues, but they said the deadline was non-negotiable.",
+            "Of course I was worried. I even tried to push back on the timeline, but you know how it is with corporate pressure."
+          ]
+        },
+        {
+          type: QuestionType.EVIDENCE_BASED,
+          text: "This code comment says 'Let's see how she likes this surprise.' Can you explain what that means?",
+          context: "Confronting with potentially incriminating evidence",
+          aiResponses: [
+            "Without additional context, I cannot determine the meaning of that comment. It may refer to a feature implementation or user experience element.",
+            "That comment appears to be inappropriate workplace communication. I do not endorse or engage in such unprofessional documentation practices."
+          ],
+          humanResponses: [
+            "Oh god, that looks terrible out of context! I was talking about a new UI feature we were implementing. 'She' referred to the user base - it was supposed to be a pleasant surprise!",
+            "That comment was about surprising the marketing team with how fast we could implement their requested feature. I realize it sounds bad now..."
+          ],
+          objectionTrigger: true
+        }
+      ]
+    }
+  ];
   
   // Initialize stake amount and matchmaking settings from localStorage
   useEffect(() => {
@@ -444,6 +698,8 @@ export default function SimpleAceAttorneyMode() {
       Promise.all(imagePromises),
       new Promise(resolve => setTimeout(resolve, 3000))
     ]).then(() => {
+      // Select a random case for this session
+      selectRandomCase();
       setLoading(false);
       startIntro();
     });
@@ -554,6 +810,14 @@ export default function SimpleAceAttorneyMode() {
     }
   }, [dialogQueue, currentDialog, gameState]);
   
+  // Select a random case for this session
+  const selectRandomCase = useCallback(() => {
+    const randomCase = casesDatabase[Math.floor(Math.random() * casesDatabase.length)];
+    setSelectedCase(randomCase);
+    console.log("Selected case:", randomCase.title);
+    return randomCase;
+  }, [casesDatabase]);
+
   // Start intro sequence
   const startIntro = useCallback(() => {
     setGameState(GameState.INTRO);
@@ -562,6 +826,11 @@ export default function SimpleAceAttorneyMode() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('aceAttorneyQuestionCount');
       console.log("Reset question counter in localStorage");
+    }
+    
+    // Select a case if none is selected
+    if (!selectedCase) {
+      selectRandomCase();
     }
     
     // Try to start background music if it wasn't started earlier
@@ -622,21 +891,32 @@ export default function SimpleAceAttorneyMode() {
     }
   }, [stakeAmount, isLiveMatchmaking]);
   
-  // Start questioning phase with more ambiguous questions
+  // Start questioning phase with case-specific questions
   const startQuestioning = useCallback(() => {
     console.log("Starting questioning phase");
     setGameState(GameState.QUESTIONING);
     
-    const questionDialogs: Dialog[] = [
-      { 
-        character: Character.JUDGE, 
-        animation: AnimationState.TALKING, 
-        text: "Witness, please describe your approach to solving complex technical problems." 
+    if (!selectedCase) {
+      console.error("No case selected for questioning!");
+      return;
+    }
+    
+    // Start with opening statement from Edgeworth
+    const openingDialogs: Dialog[] = [
+      {
+        character: Character.EDGEWORTH,
+        animation: AnimationState.CONFIDENT,
+        text: selectedCase.openingStatement
+      },
+      {
+        character: Character.JUDGE,
+        animation: AnimationState.TALKING,
+        text: `We are here to examine the case: "${selectedCase.title}". Let the questioning begin.`
       }
     ];
     
-    setDialogQueue(prev => [...prev, ...questionDialogs]);
-  }, [isLiveMatchmaking]);
+    setDialogQueue(prev => [...prev, ...openingDialogs]);
+  }, [selectedCase, isLiveMatchmaking]);
   
   // Start player turn
   const startPlayerTurn = useCallback(() => {
@@ -705,44 +985,22 @@ export default function SimpleAceAttorneyMode() {
         aiResponse = "I'm considering my response to this question... [thinking]";
       }
     } else {
-      // When not using live matchmaking, use pre-defined AI responses
-      const responseSets = [
-        // First question - Technical problem solving
-        [
-          "I approach complex problems by breaking them down into smaller, manageable parts. I first try to understand the root cause by analyzing the available data and constraints, then explore possible solutions systematically while weighing tradeoffs. I often use a combination of research, experimentation, and consulting with colleagues to find the most efficient solution.",
-          "When facing technical challenges, I like to start by drawing diagrams to visualize the problem. This helps me identify patterns and relationships that might not be obvious at first. I then prioritize the most critical aspects and work through them methodically, implementing tests along the way to verify my approach."
-        ],
-        // Second question - Project failure
-        [
-          "Last year, I underestimated the complexity of integrating a payment system, causing us to miss a deadline. I learned to better scope projects, communicate risks earlier, and build in buffer time for unforeseen complications. The experience taught me that thorough research upfront saves time later.",
-          "I once built an app with a complex architecture that was difficult to maintain. Users found it confusing too. This taught me to prioritize simplicity and user feedback from the beginning. Now I start with a minimal viable product and iterate based on real user experiences."
-        ],
-        // Third question - Feelings about code not working
-        [
-          "Honestly, it's frustrating when my code doesn't work as expected, especially after I've spent hours on it. But I've learned to see these moments as puzzles rather than failures. I take a step back, grab some coffee, and return with fresh eyes. Sometimes the solution becomes obvious after a short break.",
-          "When my code breaks, there's this initial surge of annoyance that I've learned to channel into curiosity. It's like the code is challenging me to find where my understanding is incomplete. The 'aha' moment when I finally solve the issue makes the struggle worthwhile."
-        ],
-        // Fourth question - Debugging experience
-        [
-          "My most frustrating debugging experience was tracking down a memory leak in a production system that only occurred under heavy load. After days of investigation, adding logging, and analyzing patterns, I discovered it was caused by an improper cleanup of event listeners. I fixed it by implementing a robust event management system that tracked all subscriptions.",
-          "Once I spent three days hunting a bug that caused random test failures about 2% of the time. It turned out to be a race condition in how we were mocking a database. I solved it by redesigning our test infrastructure to use transactions and isolation. The experience taught me to be suspicious of 'random' failures - they usually have systematic causes."
-        ],
-        // Fifth question - Unconventional tech use
-        [
-          "I used a Raspberry Pi with sensors to monitor my plants' soil moisture and automatically water them when needed. I added a camera that takes daily photos to track growth and detect potential issues. It's been running for years and has saved many plants during my vacations.",
-          "I created a system that monitors my energy usage at home and uses machine learning to predict consumption patterns. It automatically adjusts my thermostat and lighting to optimize for both comfort and efficiency. The project started as a weekend hobby but has reduced my energy bills by about 15%."
-        ]
-      ];
-      
-      // FIX: Make sure we're working with valid array indices
-      if (currentQuestionIndex >= responseSets.length) {
-        console.error("Invalid question index:", currentQuestionIndex, "max is", responseSets.length - 1);
-        return; // Prevent error by exiting early
+      // When not using live matchmaking, use case-based responses
+      if (!selectedCase || currentQuestionIndex >= selectedCase.questions.length) {
+        console.error("Invalid question index or no case selected:", { currentQuestionIndex, selectedCase });
+        return;
       }
       
-      // Select the appropriate response set based on the current question index
-      const currentResponseSet = responseSets[currentQuestionIndex];
-      aiResponse = currentResponseSet[Math.floor(Math.random() * currentResponseSet.length)];
+      const currentQuestion = selectedCase.questions[currentQuestionIndex];
+      
+      // Determine if opponent is AI or human (this should be set based on game setup)
+      const isOpponentAI = Math.random() > 0.5; // For now, random selection
+      
+      // Select appropriate responses based on opponent type
+      const responses = isOpponentAI ? currentQuestion.aiResponses : currentQuestion.humanResponses;
+      aiResponse = responses[Math.floor(Math.random() * responses.length)];
+      
+      console.log("Selected response for question type:", currentQuestion.type, "AI opponent:", isOpponentAI);
     }
     
     setAiAnswer(aiResponse);
@@ -860,7 +1118,7 @@ export default function SimpleAceAttorneyMode() {
       
       if (gameState === GameState.INTRO) {
         startQuestioning();
-      } else if (gameState === GameState.QUESTIONING) {
+      } else if (gameState === GameState.QUESTIONING || gameState === GameState.CROSS_EXAMINATION || gameState === GameState.EVIDENCE_PRESENTATION) {
         startPlayerTurn();
       } else if (gameState === GameState.PLAYER_TURN) {
         startAiTurn();
@@ -871,14 +1129,12 @@ export default function SimpleAceAttorneyMode() {
           console.log("Reached 5 complete exchanges, moving to verdict phase");
           startVerdict();
         } else {
-          // New questions from the judge - more challenging to distinguish human vs AI
-          const questions = [
-            "Tell me about a time you failed at a project and what you learned from it.",
-            "How do you feel when your code doesn't work as expected?",
-            "Describe your most frustrating debugging experience and how you overcame it.",
-            "What's your favorite unconventional use of technology that you've seen or created?",
-            "If you could change one thing about how programming is taught, what would it be?"
-          ];
+          // Use case-based questions with enhanced variety
+          if (!selectedCase) {
+            console.error("No case selected for questioning!");
+            startVerdict();
+            return;
+          }
           
           // Get an appropriate question for the current message count
           // Use message count to get the next question, ensuring it doesn't repeat
@@ -913,57 +1169,84 @@ export default function SimpleAceAttorneyMode() {
           localStorage.setItem('aceAttorneyQuestionCount', String(currentExchanges + 1));
           
           // IMPORTANT FIX: Make sure we're not exceeding array bounds
-          // This prevents us from trying to access undefined questions
-          const questionIndex = Math.min(currentExchanges, questions.length - 1);
+          const questionIndex = Math.min(currentExchanges, selectedCase.questions.length - 1);
           
-          // Store this index in a local variable to avoid race conditions with state updates
-          const nextQuestion = questions[questionIndex];
+          // Update current question index for AI responses
+          setCurrentQuestionIndex(questionIndex);
           
-          console.log("Selecting next question:", { 
+          const nextQuestion = selectedCase.questions[questionIndex];
+          
+          console.log("Selecting case question:", { 
             messageCount: rawMessageCount, 
             currentExchanges,
             questionIndex, 
-            nextQuestion,
-            totalQuestions: questions.length,
-            storedCount
+            questionType: nextQuestion.type,
+            questionText: nextQuestion.text,
+            totalQuestions: selectedCase.questions.length,
+            selectedCase: selectedCase.title
           });
           
           // Only proceed if we have a valid question to ask
           if (nextQuestion) {
-            // Add variety to the judge's animations
-            const judgeAnimations = [
-              AnimationState.TALKING,
-              AnimationState.DESK_SLAM,
-              AnimationState.THINKING
-            ];
+            // Choose animation based on question type for more dynamic presentation
+            let questionAnimation;
+            let questionCharacter = Character.JUDGE;
             
-            // Choose judge animation based on question content for more context-aware behavior
-            let randomAnimation;
-            const questionLower = nextQuestion.toLowerCase();
-            if (questionLower.includes("fail") || questionLower.includes("frustrat")) {
-              randomAnimation = AnimationState.DESK_SLAM;
-            } else if (questionLower.includes("feel") || questionLower.includes("favorite") || questionLower.includes("change")) {
-              randomAnimation = AnimationState.THINKING;
-            } else {
-              randomAnimation = judgeAnimations[Math.floor(Math.random() * judgeAnimations.length)];
+            switch (nextQuestion.type) {
+              case QuestionType.CROSS_EXAMINATION:
+                questionCharacter = Character.EDGEWORTH;
+                questionAnimation = AnimationState.OBJECTION;
+                break;
+              case QuestionType.EVIDENCE_BASED:
+                questionCharacter = Character.EDGEWORTH;
+                questionAnimation = AnimationState.CONFIDENT;
+                break;
+              case QuestionType.OBJECTION_TRIGGER:
+                questionCharacter = Character.EDGEWORTH;
+                questionAnimation = AnimationState.DESK_SLAM;
+                break;
+              case QuestionType.PSYCHOLOGICAL:
+                questionAnimation = AnimationState.THINKING;
+                break;
+              case QuestionType.TECHNICAL:
+                questionAnimation = AnimationState.TALKING;
+                break;
+              default:
+                questionAnimation = AnimationState.TALKING;
             }
             
             const questionDialogs: Dialog[] = [
               { 
-                character: Character.JUDGE, 
-                animation: randomAnimation, 
-                text: nextQuestion
+                character: questionCharacter, 
+                animation: questionAnimation, 
+                text: nextQuestion.text,
+                questionType: nextQuestion.type,
+                evidenceId: nextQuestion.type === QuestionType.EVIDENCE_BASED ? 'evidence_' + questionIndex : undefined
               }
             ];
+            
+            // Add follow-up if exists
+            if (nextQuestion.followUp && Math.random() > 0.5) {
+              questionDialogs.push({
+                character: questionCharacter,
+                animation: AnimationState.TALKING,
+                text: nextQuestion.followUp
+              });
+            }
             
             // Only set the dialog queue if we're not already showing this question
             // This prevents the infinite loop by ensuring we don't keep setting the same question
             setDialogQueue(questionDialogs);
             
-            // CRITICAL FIX: Change the game state to QUESTIONING after displaying a new question
-            // This ensures that when this dialog is completed, we'll transition to PLAYER_TURN
-            // in the handleDialogClick function
-            setGameState(GameState.QUESTIONING);
+            // Set appropriate game state based on question type
+            if (nextQuestion.type === QuestionType.CROSS_EXAMINATION) {
+              setGameState(GameState.CROSS_EXAMINATION);
+              setCrossExaminationPhase(true);
+            } else if (nextQuestion.type === QuestionType.EVIDENCE_BASED) {
+              setGameState(GameState.EVIDENCE_PRESENTATION);
+            } else {
+              setGameState(GameState.QUESTIONING);
+            }
           } else {
             // Fallback in case we somehow ran out of questions but haven't reached verdict phase
             console.error("No question available for index", questionIndex);
@@ -974,7 +1257,7 @@ export default function SimpleAceAttorneyMode() {
         }
       }
     }
-  }, [isTyping, currentDialog, dialogQueue, gameState, messageCount, startQuestioning, startPlayerTurn, startAiTurn, startVerdict, showInput]);
+  }, [isTyping, currentDialog, dialogQueue, gameState, messageCount, startQuestioning, startPlayerTurn, startAiTurn, startVerdict, showInput, selectedCase]);
   
   // Handle player input submission with more animation variety
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -1343,6 +1626,91 @@ export default function SimpleAceAttorneyMode() {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
+      {/* Case Information Header */}
+      {selectedCase && (
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          color: '#fff',
+          padding: '10px',
+          borderRadius: '5px',
+          fontSize: '12px',
+          zIndex: 100,
+          maxWidth: '300px'
+        }}>
+          <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+            📁 {selectedCase.title}
+          </div>
+          <div style={{ fontSize: '10px', opacity: 0.8 }}>
+            {selectedCase.description}
+          </div>
+          {currentDialog?.questionType && (
+            <div style={{ 
+              marginTop: '5px', 
+              padding: '3px 6px', 
+              background: currentDialog.questionType === QuestionType.CROSS_EXAMINATION ? '#dc2626' : 
+                         currentDialog.questionType === QuestionType.EVIDENCE_BASED ? '#7c3aed' :
+                         currentDialog.questionType === QuestionType.PSYCHOLOGICAL ? '#059669' : '#3b82f6',
+              borderRadius: '3px',
+              fontSize: '10px',
+              fontWeight: 'bold'
+            }}>
+              {currentDialog.questionType.replace('_', ' ').toUpperCase()}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Confidence Meters */}
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        background: 'rgba(0, 0, 0, 0.8)',
+        color: '#fff',
+        padding: '10px',
+        borderRadius: '5px',
+        fontSize: '12px',
+        zIndex: 100
+      }}>
+        <div style={{ marginBottom: '5px' }}>
+          <div style={{ fontSize: '10px' }}>Phoenix Confidence</div>
+          <div style={{ 
+            width: '100px', 
+            height: '4px', 
+            background: '#333', 
+            borderRadius: '2px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${phoenixConfidence}%`,
+              height: '100%',
+              background: '#3b82f6',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: '10px' }}>Edgeworth Confidence</div>
+          <div style={{ 
+            width: '100px', 
+            height: '4px', 
+            background: '#333', 
+            borderRadius: '2px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${edgeworthConfidence}%`,
+              height: '100%',
+              background: '#dc2626',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+      </div>
+
       {/* Courtroom base background - always shown */}
       <div style={{ 
         position: 'absolute',
