@@ -64,7 +64,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">TuriCheck</h1>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">Objection! AI</h1>
             </div>
             
             {isConnected ? (
@@ -114,7 +114,7 @@ export default function Home() {
           <div className="relative">
             <h2 className="text-4xl font-bold mb-4 text-gray-800">Human or <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">AI?</span></h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Test your perception in this engaging Turing challenge. Chat with the mysterious entity, analyze their responses, and determine if they're human or AI. How good are your detection skills?
+              Step into the courtroom for the ultimate Turing test! Present your case, analyze responses, and determine if you're facing a human or AI opponent. Can you prove your case beyond reasonable doubt?
             </p>
             
             <div className="mt-6 flex items-center justify-center space-x-4">
@@ -179,7 +179,7 @@ export default function Home() {
                   {/* Standard Mode Card */}
                   <div 
                     onClick={() => {
-                      localStorage.setItem('turiCheckGameMode', GameMode.STANDARD);
+                      localStorage.setItem('objectionAIGameMode', GameMode.STANDARD);
                       setShowStakeForm(true);
                     }}
                     className="bg-white border-2 border-indigo-100 hover:border-indigo-500 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col items-center max-w-xs"
@@ -201,7 +201,7 @@ export default function Home() {
                   {/* Ace Attorney Mode Card */}
                   <div 
                     onClick={() => {
-                      localStorage.setItem('turiCheckGameMode', GameMode.ACE_ATTORNEY);
+                      localStorage.setItem('objectionAIGameMode', GameMode.ACE_ATTORNEY);
                       window.location.href = '/ace-attorney-mode';
                     }}
                     className="bg-white border-2 border-red-100 hover:border-red-500 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col items-center max-w-xs"
@@ -271,15 +271,15 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="font-semibold text-gray-700">TuriCheck</span>
+              <span className="font-semibold text-gray-700">Objection! AI</span>
             </div>
             
             <div className="mt-4 md:mt-0 text-center md:text-right">
               <p className="text-gray-500 text-sm">
-                A Sui blockchain project for human vs AI detection • Powered by Sui Move contracts
+                A blockchain-powered courtroom for human vs AI detection • Powered by Sui Move contracts
               </p>
               <p className="text-gray-400 text-xs mt-1">
-                © {new Date().getFullYear()} TuriCheck • All rights reserved
+                © {new Date().getFullYear()} Objection! AI • All rights reserved
               </p>
             </div>
           </div>

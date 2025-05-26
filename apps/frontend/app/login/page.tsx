@@ -64,10 +64,10 @@ export default function Login() {
             </svg>
           </div>
           <h2 className="mt-4 text-center text-3xl font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            Connect to TuriCheck
+            Connect to Objection! AI
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Connect your wallet to start using TuriCheck
+            Connect your wallet to enter the courtroom
           </p>
         </div>
         
@@ -76,7 +76,7 @@ export default function Login() {
             <div className="text-center mb-4">
               <h3 className="text-lg font-medium text-gray-900">Connect your wallet</h3>
               <p className="text-sm text-gray-500 mt-1">
-                Connect with a wallet to play TuriCheck and collect badges
+                Connect with a wallet to enter the courtroom and collect badges
               </p>
             </div>
             

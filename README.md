@@ -1,15 +1,15 @@
-# TuriCheck
+# Objection! AI
 
-A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a brief dialogue, make a single guess, and mint a collectible Badge NFT for correct answers.
+A blockchain-powered courtroom where you present your case to determine if you're facing a human or AI opponent. Engage in dramatic courtroom dialogue, analyze responses, and prove your case beyond reasonable doubt!
 
 ## Features
 
-- **One-shot Chat**: Brief conversation with either an AI or human respondent
-- **Turing Test**: Users guess if they were chatting with a human or AI
-- **NFT Badge**: Mint a collectible NFT badge for your guesses
-- **Blockchain Integration**: Built on Sui blockchain with Move contracts
-- **Mobile-friendly**: Responsive design works on all devices
-- **Ace Attorney Mode**: Phoenix Wright-themed gameplay mode with courtroom style chat
+- **Courtroom Drama**: Engage in Phoenix Wright-style dialogue and cross-examination
+- **Turing Detection**: Present evidence and determine if your opponent is human or AI
+- **NFT Badge Collection**: Mint collectible courtroom victory badges for successful cases
+- **Blockchain-Powered**: Built on Sui blockchain with Move smart contracts
+- **Mobile Courtroom**: Responsive design works on all devices for on-the-go legal drama
+- **Multiple Game Modes**: Standard chat and full Ace Attorney courtroom experience
 
 ## Tech Stack
 
@@ -32,8 +32,8 @@ A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/TuriCheck.git
-   cd TuriCheck
+   git clone https://github.com/yourusername/objection-ai.git
+   cd objection-ai
    ```
 
 2. Install dependencies:
@@ -83,7 +83,7 @@ A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a 
 ├── contracts
 │   └── move                     # Sui Move modules
 │       ├── src
-│       │   └── TuriCheck.move   # entry: mint_badge(session_id, correct)
+│       │   └── ObjectionAI.move   # entry: mint_badge(session_id, correct)
 │       └── Move.toml
 │
 └── scripts                      # Deployment scripts
@@ -99,15 +99,15 @@ A streamlined "Human or AI?" one-shot chat experience on Sui: users engage in a 
 The default chat experience with a clean, modern interface. Users have 60 seconds to chat and determine if they're talking to an AI or human.
 
 ### Ace Attorney Mode
-A special mode inspired by the "Phoenix Wright: Ace Attorney" video game series. Features:
+The signature experience inspired by the "Phoenix Wright: Ace Attorney" video game series. Features:
 
-- **Courtroom Theme**: Phoenix Wright vs. Prosecutor debate-style interface
-- **Character Sprites**: Phoenix and Prosecutor characters present arguments
-- **Sound Effects**: Objections, dramatic courtroom sounds, and text blips
-- **10-Message Limit**: A more challenging format with limited messages
-- **Special Animations**: "OBJECTION!" and "HOLD IT!" dramatic text bubbles
+- **Full Courtroom Experience**: Complete Phoenix Wright vs. Prosecutor debate-style interface
+- **Character Sprites**: Animated Phoenix and Prosecutor characters with authentic expressions
+- **Dramatic Sound Effects**: Classic "OBJECTION!" calls, courtroom sounds, and text blips
+- **Strategic Gameplay**: Limited messages force strategic questioning and deduction
+- **Authentic Animations**: Dramatic "OBJECTION!" and "HOLD IT!" text effects
 
-To toggle between modes, use the Ace Attorney Mode toggle in the header (when signed in).
+This is the primary mode that captures the true spirit of Objection! AI - step into Phoenix Wright's shoes and prove your case!
 
 #### Adding Ace Attorney Assets
 To fully experience this mode, you'll need to add sound effects and character sprites:

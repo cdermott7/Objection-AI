@@ -1,5 +1,5 @@
-// TuriCheck contract for minting badges based on Turing test results
-module turicheck::TuriCheck {
+// Objection! AI contract for minting badges based on courtroom AI detection results
+module objection_ai::ObjectionAI {
     use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
@@ -13,7 +13,7 @@ module turicheck::TuriCheck {
     const EInvalidSessionId: u64 = 0;
     const EBadgeNotFound: u64 = 1;
     
-    /// A TuriCheck Badge NFT with enhanced metadata
+    /// An Objection! AI Badge NFT with enhanced metadata
     struct Badge has key, store {
         id: UID,
         // Core badge data

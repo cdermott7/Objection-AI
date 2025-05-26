@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Sui blockchain transaction utilities for TuriCheck
+ * Sui blockchain transaction utilities for Objection! AI
  * 
  * This module handles all blockchain-related operations:
  * - Building transactions
@@ -16,7 +16,7 @@ import { Transaction } from '@mysten/sui/transactions';
 // Initialize Sui client based on network from environment variables
 const network = process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet';
 const packageId = process.env.NEXT_PUBLIC_PACKAGE_ID;
-const gameModule = process.env.NEXT_PUBLIC_GAME_MODULE || 'turicheckminimal';
+const gameModule = process.env.NEXT_PUBLIC_GAME_MODULE || 'ObjectionAI';
 const isMockDeployment = process.env.NEXT_PUBLIC_MOCK_DEPLOYMENT === 'true';
 
 // Initialize Sui client for the appropriate network

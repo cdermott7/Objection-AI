@@ -70,7 +70,7 @@ export const useChat = () => useContext(ChatContext);
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
   // Initialize game mode from localStorage if available, otherwise use standard mode
   const initialGameMode = typeof window !== 'undefined' && window.localStorage 
-    ? (localStorage.getItem('turiCheckGameMode') as GameMode || GameMode.STANDARD)
+    ? (localStorage.getItem('objectionAIGameMode') as GameMode || GameMode.STANDARD)
     : GameMode.STANDARD;
 
   const [sessionId, setSessionId] = useState<number | null>(null);
@@ -129,7 +129,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     // This helps avoid any state inconsistencies
     if (typeof window !== 'undefined') {
       // Save the new mode to localStorage so we can retrieve it after reload
-      localStorage.setItem('turiCheckGameMode', newMode);
+      localStorage.setItem('objectionAIGameMode', newMode);
       
       // Small delay to ensure state is saved before reload
       setTimeout(() => {

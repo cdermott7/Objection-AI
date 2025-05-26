@@ -8,7 +8,7 @@ export default function AceAttorneyPage() {
   useEffect(() => {
     // Force ace attorney mode in localStorage
     if (typeof window !== 'undefined') {
-      localStorage.setItem('turiCheckGameMode', 'ace_attorney');
+      localStorage.setItem('objectionAIGameMode', 'ace_attorney');
       
       // Apply fullscreen styles
       document.documentElement.style.overflow = 'hidden';
@@ -69,7 +69,7 @@ export default function AceAttorneyPage() {
       <button 
         onClick={() => {
           if (typeof window !== 'undefined') {
-            localStorage.removeItem('turiCheckGameMode');
+            localStorage.removeItem('objectionAIGameMode');
             window.location.href = '/';
           }
         }}

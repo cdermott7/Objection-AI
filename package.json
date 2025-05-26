@@ -1,4 +1,7 @@
 {
+  "name": "objection-ai",
+  "version": "1.0.0",
+  "description": "A blockchain-powered courtroom for human vs AI detection",
   "private": true,
   "workspaces": ["apps/*","contracts","sdk"]
 }

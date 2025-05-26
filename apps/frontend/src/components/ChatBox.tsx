@@ -175,7 +175,7 @@ export default function ChatBox() {
         <button 
           onClick={() => {
             if (typeof window !== 'undefined') {
-              localStorage.removeItem('turiCheckGameMode');
+              localStorage.removeItem('objectionAIGameMode');
               window.location.reload();
             }
           }}

@@ -28,7 +28,7 @@ export default function SimpleAceAttorneyToggle() {
           toggleGameMode();
           
           // Then ensure localStorage is updated
-          localStorage.setItem('turiCheckGameMode', GameMode.STANDARD);
+          localStorage.setItem('objectionAIGameMode', GameMode.STANDARD);
           
           // Finally navigate
           console.log('Navigating to standard mode (/)');
@@ -47,7 +47,7 @@ export default function SimpleAceAttorneyToggle() {
           toggleGameMode();
           
           // Then ensure localStorage is updated
-          localStorage.setItem('turiCheckGameMode', GameMode.ACE_ATTORNEY);
+          localStorage.setItem('objectionAIGameMode', GameMode.ACE_ATTORNEY);
           
           // Finally navigate
           console.log('Navigating to Ace Attorney mode (/ace-attorney-mode)');

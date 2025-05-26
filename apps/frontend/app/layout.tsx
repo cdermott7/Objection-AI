@@ -15,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TuriCheck",
-  description: "A streamlined 'Human or AI?' one-shot chat experience on Sui",
+  title: "Objection! AI",
+  description: "A blockchain-powered courtroom for human vs AI detection - Present your case and prove your opponent's true nature!",
 };
 
 export default function RootLayout({

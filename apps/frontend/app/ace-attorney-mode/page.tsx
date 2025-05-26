@@ -22,7 +22,7 @@ export default function AceAttorneyModePage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Set game mode
-      localStorage.setItem('turiCheckGameMode', GameMode.ACE_ATTORNEY);
+      localStorage.setItem('objectionAIGameMode', GameMode.ACE_ATTORNEY);
       
       // Set up mock wallet (always use mock wallet for Ace Attorney mode)
       try {
@@ -82,7 +82,7 @@ export default function AceAttorneyModePage() {
   // Return to standard mode
   const handleReturnToStandard = useCallback(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('turiCheckGameMode', GameMode.STANDARD);
+      localStorage.setItem('objectionAIGameMode', GameMode.STANDARD);
       router.push('/');
     }
   }, [router]);

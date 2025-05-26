@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
   };
   
   // Ensure we're in Ace Attorney mode in localStorage
-  localStorage.setItem('turiCheckGameMode', 'ace_attorney');
+  localStorage.setItem('objectionAIGameMode', 'ace_attorney');
   
   // Create placeholder for missing assets tracking
   window.missingAssets = window.missingAssets || {
@@ -1150,7 +1150,7 @@ export default function SimpleAceAttorneyMode() {
     if (typeof window !== 'undefined') {
       try {
         // First update localStorage
-        localStorage.setItem('turiCheckGameMode', 'standard');
+        localStorage.setItem('objectionAIGameMode', 'standard');
         
         // Then use the context function if available
         if (toggleGameMode) {
